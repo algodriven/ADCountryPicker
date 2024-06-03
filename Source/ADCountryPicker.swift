@@ -43,13 +43,14 @@ open class ADCountryPicker: UITableViewController {
         
         for countryCode in countriesCodes {
             let displayName = (locale as NSLocale).displayName(forKey: NSLocale.Key.countryCode, value: countryCode)
+            let enName = NSLocale(localeIdentifier: "en").displayName(forKey: NSLocale.Key.countryCode, value: countryCode)
             let countryData = CallingCodes.filter { $0["code"] == countryCode }
             let country: ADCountry
             
             if countryData.count > 0, let dialCode = countryData[0]["dial_code"] {
-                country = ADCountry(name: displayName!, code: countryCode, dialCode: dialCode)
+                country = ADCountry(name: displayName!, enName: enName!, code: countryCode, dialCode: dialCode)
             } else {
-                country = ADCountry(name: displayName!, code: countryCode)
+                country = ADCountry(name: displayName!, enName: enName!, code: countryCode)
             }
             unsortedCountries.append(country)
         }
@@ -65,7 +66,7 @@ open class ADCountryPicker: UITableViewController {
         }
         
         let countries: [ADCountry] = unsortedCountries.map { country in
-            let country = ADCountry(name: country.name, code: country.code, dialCode: country.dialCode)
+            let country = ADCountry(name: country.name, enName: country.enName, code: country.code, dialCode: country.dialCode)
             country.section = collation.section(for: country, collationStringSelector: #selector(getter: ADCountry.name))
             return country
         }
@@ -94,6 +95,8 @@ open class ADCountryPicker: UITableViewController {
             countryCode = self.defaultCountryCode
         }
         
+        let enName = NSLocale(localeIdentifier: "en").displayName(forKey: NSLocale.Key.countryCode, value: countryCode)
+        
         sections.insert(Section(), at: 0)
         let locale = Locale.current
         let displayName = (locale as NSLocale).displayName(forKey: NSLocale.Key.countryCode, value: countryCode)
@@ -101,9 +104,9 @@ open class ADCountryPicker: UITableViewController {
         let country: ADCountry
         
         if countryData.count > 0, let dialCode = countryData[0]["dial_code"] {
-            country = ADCountry(name: displayName!, code: countryCode, dialCode: dialCode)
+            country = ADCountry(name: displayName!, enName: enName!, code: countryCode, dialCode: dialCode)
         } else {
-            country = ADCountry(name: displayName!, code: countryCode)
+            country = ADCountry(name: displayName!, enName: enName!, code: countryCode)
         }
         country.section = 0
         sections[0].addCountry(country)
@@ -122,7 +125,7 @@ open class ADCountryPicker: UITableViewController {
     open var didSelectCountryClosure: ((String, String) -> ())?
     
     /// Closure which returns country name, ISO code, calling codes
-    open var didSelectCountryWithCallingCodeClosure: ((String, String, String) -> ())?
+    open var didSelectCountryWithCallingCodeClosure: ((ADCountry) -> ())?
     
     /// Flag to indicate if calling codes should be shown next to the country name. Defaults to false.
     open var showCallingCodes = false
@@ -430,7 +433,7 @@ extension ADCountryPicker {
         delegate?.countryPicker?(self, didSelectCountryWithName: country.name, code: country.code)
         delegate?.countryPicker(self, didSelectCountryWithName: country.name, code: country.code, dialCode: country.dialCode)
         didSelectCountryClosure?(country.name, country.code)
-        didSelectCountryWithCallingCodeClosure?(country.name, country.code, country.dialCode)
+        didSelectCountryWithCallingCodeClosure?(country)
     }
 }
 

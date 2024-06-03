@@ -8,14 +8,16 @@
 
 import UIKit
 
-class ADCountry: NSObject {
+open class ADCountry: NSObject {
     @objc let name: String
+    @objc let enName: String
     let code: String
     var section: Int?
     let dialCode: String!
     
-    init(name: String, code: String, dialCode: String = " - ") {
+    init(name: String, enName: String , code: String, dialCode: String = " - ") {
         self.name = name
+        self.enName = enName
         self.code = code
         self.dialCode = dialCode
     }
