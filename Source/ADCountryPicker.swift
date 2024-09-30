@@ -48,9 +48,9 @@ open class ADCountryPicker: UITableViewController {
             let country: ADCountry
             
             if countryData.count > 0, let dialCode = countryData[0]["dial_code"] {
-                country = ADCountry(name: displayName!, enName: enName!, code: countryCode, dialCode: dialCode)
+                country = ADCountry(name: displayName!, enName: enName, code: countryCode, dialCode: dialCode)
             } else {
-                country = ADCountry(name: displayName!, enName: enName!, code: countryCode)
+                country = ADCountry(name: displayName!, enName: enName, code: countryCode)
             }
             unsortedCountries.append(country)
         }
