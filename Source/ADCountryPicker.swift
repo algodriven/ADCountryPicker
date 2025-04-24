@@ -10,7 +10,7 @@ import UIKit
 
 struct Section {
     var countries: [ADCountry] = []
-    mutating func addCountry(_ country:  unsortedCountries.append(country)) {
+    mutating func addCountry(_ country: ADCountry) {
         countries.append(country)
     }
 }
