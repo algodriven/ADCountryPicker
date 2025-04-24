@@ -10,7 +10,7 @@ import UIKit
 
 struct Section {
     var countries: [ADCountry] = []
-    mutating func addCountry(_ country: ADCountry) {
+    mutating func addCountry(_ country:  unsortedCountries.append(country)) {
         countries.append(country)
     }
 }
@@ -42,15 +42,15 @@ open class ADCountryPicker: UITableViewController {
         let countriesCodes = customCountriesCode == nil ? Locale.isoRegionCodes : customCountriesCode!
         
         for countryCode in countriesCodes {
-            let displayName = (locale as NSLocale).displayName(forKey: NSLocale.Key.countryCode, value: countryCode)
+            guard let displayName = (locale as NSLocale).displayName(forKey: NSLocale.Key.countryCode, value: countryCode) else { continue }
             let enName = NSLocale(localeIdentifier: "en").displayName(forKey: NSLocale.Key.countryCode, value: countryCode)
             let countryData = CallingCodes.filter { $0["code"] == countryCode }
             let country: ADCountry
             
             if countryData.count > 0, let dialCode = countryData[0]["dial_code"] {
-                country = ADCountry(name: displayName!, enName: enName, code: countryCode, dialCode: dialCode)
+                country = ADCountry(name: displayName, enName: enName, code: countryCode, dialCode: dialCode)
             } else {
-                country = ADCountry(name: displayName!, enName: enName, code: countryCode)
+                country = ADCountry(name: displayName, enName: enName, code: countryCode)
             }
             unsortedCountries.append(country)
         }
